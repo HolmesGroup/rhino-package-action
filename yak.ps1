@@ -11,14 +11,15 @@ $name = $manifest | Select-String -Pattern "^name: *(.*)$" | ForEach-Object { $_
 $version = $manifest | Select-String -Pattern "^version: *(.*)$" | ForEach-Object { $_.Matches.Groups[1].Value }
 
 # TODO: make distrubution platform configurable
-$packageName = $name + "-" + $version + "-rh7-win.yak"
+$packageName = $name + "-" + $version + "-rh7-win"
 
 $packagePath = Join-Path -Path $OutputDir -ChildPath $packageName
 
-Write-Host "Creating package $packagePath"
+Write-Host "Creating package $packagePath.yak"
 
 # Yak files are just a zip file with a different extension
 # https://developer.rhino3d.com/guides/yak/the-anatomy-of-a-package/#package-structure
 
-Compress-Archive -Path $Path\* -DestinationPath $packagePath -Force
+Compress-Archive -Path $Path\* -DestinationPath "$packagePath.zip" -Force
+Move-Item -Force -Path "$packagePath.zip" -Destination "$packagePath.yak"
 

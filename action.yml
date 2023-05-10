@@ -1,11 +1,26 @@
-name: 'Create Rhino package'
-description: 'Creates a Rhino package from a Rhino plugin'
+name: Create Rhino package
+description: Creates a Rhino package from a Rhino plugin
 inputs:
   path:
-    description: 'Path to directory containing Rhino plugin'
+    description: Path to directory containing Rhino plugin
     required: true
+  deploy-path:
+    description: Path to directory where Rhino package will be copied to
+    required: false
 runs:
-  using: "composite"
+  using: composite
   steps:
-    - run: ${{ github.action_path }}/yak.ps1 ${{ inputs.path }}
-      shell: pwsh
+    - name: Create package
+      shell: powershell
+      run: ${{ github.action_path }}/yak.ps1 ${{ inputs.path }}
+
+    - name: Copy package
+      if: inputs.deploy-path
+      shell: powershell
+      run: |
+        $package = Get-ChildItem -Path ./ -Filter *.yak
+        if (Test-Path ${{ inputs.deploy-path }}/$package.Name) {
+          Write-Host "Package already exists, skipping deployment"
+        } else {
+          Copy-Item -Path $package -Destination ${{ inputs.deploy-path }}
+        }
