@@ -1,0 +1,11 @@
+name: 'Create Rhino package'
+description: 'Creates a Rhino package from a Rhino plugin'
+inputs:
+  path:
+    description: 'Path to directory containing Rhino plugin'
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - run: ${{ github.action_path }}/yak.ps1 ${{ inputs.path }}
+      shell: pwsh
