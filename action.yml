@@ -19,8 +19,10 @@ runs:
       shell: powershell
       run: |
         $package = Get-ChildItem -Path ./ -Filter *.yak
+        Write-Host "Deploying package $package"
         if (Test-Path ${{ inputs.deploy-path }}/$($package.Name)) {
           Write-Host "Package already exists, skipping deployment"
         } else {
           Copy-Item -Path $package -Destination ${{ inputs.deploy-path }}
+          Write-Host "Package deployed"
         }
