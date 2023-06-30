@@ -19,6 +19,10 @@ runs:
       shell: powershell
       run: |
         $package = Get-ChildItem -Path ./ -Filter *.yak
+        if ($package.Count -gt 1) {
+          Write-Host "More than one package found, aborting. Perhaps you need to clean up the directory?"
+          exit 1
+        }
         Write-Host "Deploying package $package"
         if (Test-Path ${{ inputs.deploy-path }}/$($package.Name)) {
           Write-Host "Package already exists, skipping deployment"
